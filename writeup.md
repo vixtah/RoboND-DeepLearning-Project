@@ -35,9 +35,11 @@ Fully connected layer: This is a layer in which every input is connected to ever
 
 # Encoding/Decoding
 
-Encoding images is useful for extracting features at different scales as well as preserving spatial information about the features. It should be used to take when the subject can be of variable size and position within an image because the encoder takes advantage of weight sharing to establish locational invariance.
+Encoding images is useful for extracting features at different scales as well as preserving spatial information about the features. At a larger scale, the encoder might try to recognize the shape of humans as a whole. Then, the next level might try to recognize different appendages like arms, legs and the head. And the lowest levels might try to analyze features like curves and lines.
 
-Decoding images is useful for upsampling images to a desired size and we want to extract positional information in our output.
+It should be used to take when the subject can be of variable size and position within an image because the encoder takes advantage of weight sharing to establish locational invariance.
+
+Decoding images is useful for upsampling images to a desired size and we want to extract positional information in our output. However, there will always be some data loss when trying to upsample because it relies on neighboring pixels in order to interpolate the ones in between. The upsampling method I use is bilinear upsampling which also looses out on finer details for performance compared to transposed convolutions.
 
 --------------------------------------------------------------------------
 
@@ -45,3 +47,10 @@ Decoding images is useful for upsampling images to a desired size and we want to
 
 This model and data wouldn't work well for other objects because it was trained only with images of people. The model has implicitly learned to analyze and extract human features which wouldn't be useful for classifying and tracking a car.  We could however extend the model to fit more objects if we add more data to the training set which includes other objects like dogs or cars and extend the filter depth at each layer.
 
+--------------------------------------------------------------------------
+
+# Future Work
+
+I was able to achieve a score of .435 with only the provided data. I think the biggest improvement I could make is to gather more custom data. I noticed that the score for detecting the hero was relatively low so I think adding more training examples for that scenario would definitely help. Also, I could flip the training images to obtain a larger training set.
+
+A lot of examples I read about for conv nets reduced the width and height to 1 with a fully connected layer at the end of encoding. I think adding a fully connected layer at the end might help to connect the features in the last layer of encoding. However I'm not sure what upsampling techniques are available to upscale from 1x1. 
